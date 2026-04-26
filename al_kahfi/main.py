@@ -10,13 +10,13 @@ from al_kahfi.plugins.barrier.guardrail import BarrierPlugin
 
 # 1. Initialize the FastAPI Application
 app = FastAPI(
-    title="The Al-Kahfi Framework API",
+    title="Alkahfi Security Framework API",
     description="A Human-Centric, Zero-Trust Cybersecurity Framework for mitigating Social Engineering and Account Takeovers.",
     version="1.0.0"
 )
 
 print("========================================")
-print("🛡️ Bootstrapping Al-Kahfi Framework... 🛡️")
+print("🛡️ Bootstrapping Alkahfi Security Framework... 🛡️")
 print("========================================")
 
 try:
