@@ -17,10 +17,16 @@ class RiskLevel(str, Enum):
 
 class InteractionRequest(BaseModel):
     """Schema representing an incoming digital interaction."""
+    
     message: str = Field(..., description="The text content of the message")
-    sender_id: str = Field(..., description="Unique identifier of the sender (e.g., phone number, email)")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Contextual metadata (e.g., country_code, is_new_device)")
+    sender_id: str = Field(..., description="Unique identifier of the sender")
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
+    @field_validator("message")
+    @classmethod
+    def sanitize_newlines(cls, v: str) -> str:
+        return v.strip().replace("\r\n", "\\n").replace("\n", "\\n")
+        
 class FilterResult(BaseModel):
     """Schema representing the output of a single filter module."""
     module_name: str
