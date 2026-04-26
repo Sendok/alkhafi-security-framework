@@ -1,0 +1,38 @@
+[build-system]
+# Defines the build tools used (Setuptools is the industry standard)
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# The identity of your package in the repository (e.g., PyPI)
+name = "alkahfi-security-framework"
+version = "1.0.0"
+authors = [
+  { name="Dhendik Dwi Prasetyo / Security Researcher", email="dhendikdwiprasetyo@gmail.com" },
+]
+description = "A Human-Centric, Zero-Trust Cybersecurity Framework for mitigating Social Engineering and Account Takeovers."
+readme = "README.md"
+requires-python = ">=3.8"
+
+# Metadata for PyPI search categorization
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Security",
+    "Framework :: FastAPI",
+]
+
+# List of dependencies that PIP will install automatically
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "python-dotenv",
+    "requests"
+]
+
+[project.scripts]
+# Registers the CLI command to the user's terminal
+# Format: "command_name = module_path:function_name"
+alkahfi = "al_kahfi.cli:main"
