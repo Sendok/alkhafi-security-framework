@@ -10,7 +10,7 @@ class ICognitiveProvider(ABC):
         pass
 
 class RegexCognitiveProvider(ICognitiveProvider):
-    """Mesin fallback berbasis Regex, sangat cepat, tanpa AI."""
+    """Abstract interface for all cognitive analysis engine."""
     def analyze_text(self, system_prompt: str, user_text: str) -> dict:
         text = user_text.lower()
         # Pola ancaman tingkat tinggi
@@ -28,7 +28,7 @@ class RegexCognitiveProvider(ICognitiveProvider):
         }
 
 class CloudAPIProvider(ICognitiveProvider):
-    """Menghubungkan ke API Cloud (OpenAI, Groq, dll)."""
+    """Connecting to API Cloud (OpenAI, Groq, etc)."""
     def __init__(self, api_key: str, base_url: str, model_name: str):
         self.api_key = api_key
         self.base_url = base_url
@@ -63,7 +63,7 @@ class CloudAPIProvider(ICognitiveProvider):
             return {"manipulation_score": 50, "reason": f"Cloud API timeout or parsing error."}
 
 class LocalOnPremProvider(ICognitiveProvider):
-    """Menghubungkan ke LLM Lokal (misal: Ollama)."""
+    """Connecting to Local LLM (example: Ollama)."""
     def __init__(self, base_url: str, model_name: str):
         self.base_url = base_url
         self.model_name = model_name

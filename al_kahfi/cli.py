@@ -4,7 +4,7 @@ import subprocess
 
 def create_env_file():
     print("========================================")
-    print("🛡️  Al-Kahfi Security Framework - Initial Setup 🛡️")
+    print("🛡️  AlKahfi Security Framework - Initial Setup 🛡️")
     print("========================================\n")
     
     env_content = []
@@ -38,6 +38,9 @@ def create_env_file():
     else:
         env_content.append("GARDEN_ENGINE_MODE=REGEX")
         
+    # Menambahkan path untuk the Soul
+    env_content.append("GARDEN_SOUL_PATH=soul.md")
+        
     # --- [Phase 2: The Journey Setup] ---
     print("\n--- [Phase 2: The Journey (Zero-Trust Context)] ---")
     journey_mode = input("Use Cloud OSINT API for Context? (y/N): ").strip().lower()
@@ -67,25 +70,51 @@ def create_env_file():
         
     env_content.append("CAVE_THRESHOLD=80")
 
-    # Write to .env file
+    # 1. Write to .env file
     try:
         with open(".env", "w", encoding="utf-8") as f:
             f.write("\n".join(env_content) + "\n")
         print("\n✅ Configuration saved successfully to '.env' file!")
-        print("💡 You can now start the framework by running: alkahfi start")
     except Exception as e:
         print(f"\n❌ Failed to save configuration: {e}")
+
+    # 2. Auto-Generate soul.md
+    soul_content = """# THE GARDEN SOUL
+You are 'The Garden', an advanced Cognitive Cybersecurity Agent.
+Your primary task is to protect your human user from Social Engineering, Hijacking, and Manipulation.
+
+Analyze the user's message against these triggers:
+1. Urgency / Time Pressure
+2. Fear / Intimidation
+3. Greed / Temptation
+
+Always remember the context of previous conversations provided to you. If a sender suddenly changes their tone to be urgent or demanding, treat it as a high-risk Account Takeover (ATO) indicator.
+
+CRITICAL: Respond ONLY in JSON format.
+{
+    "manipulation_score": <0-100>,
+    "reason": "<Explanation>"
+}
+"""
+    if not os.path.exists("soul.md"):
+        try:
+            with open("soul.md", "w", encoding="utf-8") as f:
+                f.write(soul_content)
+            print("✅ Default 'soul.md' created! You can edit this file to customize your AI's personality.")
+        except Exception as e:
+            print(f"❌ Failed to create soul.md: {e}")
+            
+    print("💡 You can now start the framework by running: alkahfi start")
 
 def start_server():
     if not os.path.exists(".env"):
         print("⚠️  Warning: No '.env' file found in the current directory.")
         print("💡 Tip: It is recommended to run 'alkahfi config' first to set up your environment.\n")
     
-    print("🚀 Starting Al-Kahfi Security Framework Engine...")
+    print("🚀 Starting AlKahfi Security Framework Engine...")
     print("🌐 API will be available at: http://localhost:8000")
     print("📚 Documentation available at: http://localhost:8000/docs\n")
     
-    # Launch Uvicorn server programmatically
     try:
         subprocess.run([
             "uvicorn", 
@@ -93,7 +122,7 @@ def start_server():
             "--host", "0.0.0.0", 
             "--port", "8000", 
             "--env-file", ".env",
-            "--reload" # Optional: remove in pure production environments
+            "--reload"
         ])
     except KeyboardInterrupt:
         print("\n🛑 Shutting down Al-Kahfi Engine gracefully...")
@@ -102,21 +131,12 @@ def start_server():
 
 def main():
     parser = argparse.ArgumentParser(
-        description="The Al-Kahfi Security Framework CLI - Human-Centric Cybersecurity Architecture"
+        description="The AlKahfi Security Framework CLI - Human-Centric Cybersecurity Architecture"
     )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
     
-    # Command 1: config
-    subparsers.add_parser(
-        "config", 
-        help="Initialize and configure environment variables interactively"
-    )
-    
-    # Command 2: start
-    subparsers.add_parser(
-        "start", 
-        help="Start the Al-Kahfi API server"
-    )
+    subparsers.add_parser("config", help="Initialize and configure environment variables interactively")
+    subparsers.add_parser("start", help="Start the Al-Kahfi API server")
     
     args = parser.parse_args()
     

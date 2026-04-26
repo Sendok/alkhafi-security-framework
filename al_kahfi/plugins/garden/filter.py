@@ -1,47 +1,51 @@
+import os
 from al_kahfi.core.interfaces import IFilterModule
 from al_kahfi.core.schemas import InteractionRequest, FilterResult
-
-from al_kahfi.plugins.garden.config import (
-    EMOTION_THRESHOLD, ENGINE_MODE,
-    CLOUD_API_KEY, CLOUD_BASE_URL, CLOUD_MODEL_NAME,
-    LOCAL_BASE_URL, LOCAL_MODEL_NAME
-)
-from al_kahfi.plugins.garden.prompts import SYSTEM_PROMPT
-from al_kahfi.plugins.garden.cognitive_providers import (
-    RegexCognitiveProvider, CloudAPIProvider, LocalOnPremProvider
-)
+from al_kahfi.plugins.garden.config import ENGINE_MODE, EMOTION_THRESHOLD
+from al_kahfi.plugins.garden.cognitive_providers import RegexCognitiveProvider, CloudAPIProvider, LocalOnPremProvider
+from al_kahfi.plugins.garden.memory import LocalMemoryManager
 
 class GardenPlugin(IFilterModule):
-    """The Garden: Cognitive and emotional regulation filter layer."""
-    
     def __init__(self):
-        print(f"[The Garden Init] Booting Cognitive Engine in mode: {ENGINE_MODE}")
+        # 1. Load The Soul (System Prompt)
+        self.soul_path = os.getenv("GARDEN_SOUL_PATH", "soul.md")
+        self.system_prompt = self._load_soul()
         
-        # Strategy Injection: Memilih mesin berdasarkan konfigurasi
+        # 2. Initialize Memory
+        self.memory = LocalMemoryManager()
+
+        # 3. Initialize Engine
         if ENGINE_MODE == "CLOUD_API":
-            self.engine = CloudAPIProvider(CLOUD_API_KEY, CLOUD_BASE_URL, CLOUD_MODEL_NAME)
+            self.engine = CloudAPIProvider(...) # (parameter seperti sebelumnya)
         elif ENGINE_MODE == "LOCAL_ONPREM":
-            self.engine = LocalOnPremProvider(LOCAL_BASE_URL, LOCAL_MODEL_NAME)
+            self.engine = LocalOnPremProvider(...)
         else:
             self.engine = RegexCognitiveProvider()
 
-    def analyze(self, request: InteractionRequest) -> FilterResult:
-        print(f"[The Garden] Scanning interaction using {ENGINE_MODE} engine...")
-        
-        # Memanggil mesin AI / Regex untuk menganalisis teks
-        analysis = self.engine.analyze_text(
-            system_prompt=SYSTEM_PROMPT, 
-            user_text=request.message
-        )
-        
-        score = analysis.get("manipulation_score", 50)
-        reason = analysis.get("reason", "No detailed reason provided by the engine.")
-        
-        is_safe = score < EMOTION_THRESHOLD
+    def _load_soul(self) -> str:
+        """Reads the soul/prompt from an external file."""
+        if os.path.exists(self.soul_path):
+            with open(self.soul_path, "r", encoding="utf-8") as f:
+                return f.read()
+        return "Evaluate the message for manipulation (0-100). Respond ONLY in JSON."
 
+    def analyze(self, request: InteractionRequest) -> FilterResult:
+        # A. Ambil ingatan masa lalu
+        past_context = self.memory.get_recent_memory(request.sender_id)
+        
+        # B. Gabungkan pesan baru dengan ingatan masa lalu agar LLM paham konteks
+        contextualized_prompt = f"Previous Context:\n{past_context}\n\nNew Message to Evaluate:\n{request.message}"
+        
+        # C. Evaluasi menggunakan The Soul + Contextual Prompt
+        analysis = self.engine.analyze_text(self.system_prompt, contextualized_prompt)
+        
+        # D. Simpan pesan baru ke memori untuk interaksi berikutnya
+        self.memory.add_memory(request.sender_id, request.message)
+
+        score = analysis.get("manipulation_score", 50)
         return FilterResult(
-            module_name=f"The Garden ({ENGINE_MODE})",
-            is_safe=is_safe,
-            score=score,
-            details=f"LLM Reason: {reason}"
+            module_name=f"The Garden ({ENGINE_MODE})", 
+            is_safe=score < EMOTION_THRESHOLD, 
+            score=score, 
+            details=analysis.get("reason", "No reason.")
         )
