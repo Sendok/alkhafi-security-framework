@@ -1,4 +1,4 @@
-```markdown
+
 # 🛡️ The Al-Kahfi Security Framework
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://python.org)
@@ -180,4 +180,3 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 <p align="center">
   <sub>Built with 🔥 by Dhendik Dwi Prasetyo aka Sendok</sub>
 </p>
-```
