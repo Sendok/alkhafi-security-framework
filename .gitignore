@@ -4,6 +4,7 @@ venv/
 
 # Local Database
 jamaah_threats.db
+garden_memory.db
 
 # Build & Package Metadata
 alkahfi_security_framework.egg-info/
@@ -17,3 +18,6 @@ __pycache__/
 
 # OS Generated Files (macOS)
 .DS_Store
+
+# Persona AI
+soul.md
