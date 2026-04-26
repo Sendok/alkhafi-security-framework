@@ -147,8 +147,6 @@ Send a POST request to `/api/v1/scan` to analyze any message.
 al_kahfi_oss/
 ├── pyproject.toml         # Package definition
 ├── README.md              # Documentation
-├── .env.example           # Example configuration
-│
 └── al_kahfi/              # Source Code
     ├── cli.py             # Terminal commands wizard
     ├── main.py            # FastAPI Entry Point
