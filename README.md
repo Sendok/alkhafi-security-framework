@@ -73,6 +73,8 @@ The Al-Kahfi Framework is built as an installable Python package with a built-in
 ```bash
 git clone https://github.com/sendok/alkahfi-security-framework.git
 cd alkahfi-security-framework
+python3 -m venv venv
+source venv/bin/activate
 pip install -e .
 ```
 

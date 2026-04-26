@@ -1,0 +1,19 @@
+# Environments
+venv/
+.env
+
+# Local Database
+jamaah_threats.db
+
+# Build & Package Metadata
+alkahfi_security_framework.egg-info/
+build/
+dist/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS Generated Files (macOS)
+.DS_Store
