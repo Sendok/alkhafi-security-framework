@@ -67,7 +67,6 @@ def create_env_file():
     else:
         env_content.append("CAVE_ENGINE_MODE=LOCAL_DB")
         env_content.append("CAVE_LOCAL_DB_PATH=jamaah_threats.db")
-        env_content.append("CAVE_LOCAL_DB_PATH=garden_memory.db")
         
     env_content.append("CAVE_THRESHOLD=80")
 
