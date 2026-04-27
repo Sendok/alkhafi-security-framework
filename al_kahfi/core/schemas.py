@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import Dict, Any, List
 from enum import Enum
 
@@ -21,7 +21,6 @@ class InteractionRequest(BaseModel):
     message: str = Field(..., description="The text content of the message")
     sender_id: str = Field(..., description="Unique identifier of the sender")
     metadata: Dict[str, Any] = Field(default_factory=dict)
-
     @field_validator("message")
     @classmethod
     def sanitize_newlines(cls, v: str) -> str:
